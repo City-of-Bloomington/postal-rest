@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,28 +14,23 @@ import (
 	parser "github.com/openvenues/gopostal/parser"
 )
 
-type Request struct {
-	Query string `json:"query"`
-}
-
 func main() {
 	host := os.Getenv("LISTEN_HOST")
 	if host == "" {
-		host = "0.0.0.0"
+       host = "0.0.0.0"
 	}
 	port := os.Getenv("LISTEN_PORT")
 	if port == "" {
-		port = "8080"
+       port = "8080"
 	}
 	listenSpec := fmt.Sprintf("%s:%s", host, port)
-
-	certFile := os.Getenv("SSL_CERT_FILE")
-	keyFile := os.Getenv("SSL_KEY_FILE")
+	certFile   := os.Getenv("SSL_CERT_FILE")
+	keyFile    := os.Getenv("SSL_KEY_FILE")
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health", HealthHandler).Methods("GET")
-	router.HandleFunc("/expand", ExpandHandler).Methods("POST")
-	router.HandleFunc("/parser", ParserHandler).Methods("POST")
+	router.HandleFunc("/expand", ExpandHandler).Methods("GET")
+	router.HandleFunc("/parse",  ParserHandler).Methods("GET")
 
 	s := &http.Server{Addr: listenSpec, Handler: router}
 	go func() {
@@ -67,26 +61,17 @@ func HealthHandler(w http.ResponseWriter, r *http.Request) {
 func ExpandHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var req Request
-
-	q, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(q, &req)
-
-	expansions := expand.ExpandAddress(req.Query)
-
-	expansionThing, _ := json.Marshal(expansions)
-	w.Write(expansionThing)
+    query, ok  := r.URL.Query()["address"]
+	expansions := expand.ExpandAddress(query)
+	output, _  := json.Marshal(expansions)
+	w.Write(output)
 }
 
 func ParserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var req Request
-
-	q, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(q, &req)
-
-	parsed := parser.ParseAddress(req.Query)
-	parseThing, _ := json.Marshal(parsed)
-	w.Write(parseThing)
+    query, ok := r.URL.Query()["address"]
+	parsed    := parser.ParseAddress(query)
+	output, _ := json.Marshal(parsed)
+	w.Write(output)
 }
