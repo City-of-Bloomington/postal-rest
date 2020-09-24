@@ -61,7 +61,7 @@ func HealthHandler(w http.ResponseWriter, r *http.Request) {
 func ExpandHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-    query, ok  := r.URL.Query()["address"]
+    query      := r.URL.Query().Get("address")
 	expansions := expand.ExpandAddress(query)
 	output, _  := json.Marshal(expansions)
 	w.Write(output)
@@ -70,7 +70,7 @@ func ExpandHandler(w http.ResponseWriter, r *http.Request) {
 func ParserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-    query, ok := r.URL.Query()["address"]
+    query     := r.URL.Query().Get("address")
 	parsed    := parser.ParseAddress(query)
 	output, _ := json.Marshal(parsed)
 	w.Write(output)
