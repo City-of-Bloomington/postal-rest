@@ -1,0 +1,29 @@
+# Empty example values for postal-rest.
+# This is a YAML-formatted file.
+# Copy this file and declare your own variables to be passed into the templates.
+---
+replicaCount: 1
+
+image:
+  repository: 'docker-repo.bloomington.in.gov/cob/postal-rest'
+  tag: <tag here>
+  pullPolicy: Always
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: 'ClusterIP'
+  port:       8080
+  targetPort: 8080
+
+ingress:
+  enabled: true
+  hosts:
+    - host: example.local
+      paths: ["/postal-rest"]
+
+  tls:
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+...

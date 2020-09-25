@@ -15,19 +15,18 @@ import (
 )
 
 func main() {
-    host := os.Getenv("LISTEN_HOST")
-    if host == "" {
-       host = "0.0.0.0"
-    }
-    port := os.Getenv("LISTEN_PORT")
-    if port == "" {
-       port = "8080"
-    }
+    host     := os.Getenv("LISTEN_HOST"  )
+    port     := os.Getenv("LISTEN_PORT"  )
+    certFile := os.Getenv("SSL_CERT_FILE")
+    keyFile  := os.Getenv("SSL_KEY_FILE" )
+
+    if host == "" { host = "0.0.0.0" }
+    if port == "" { port = "8080"    }
+
     listenSpec := fmt.Sprintf("%s:%s", host, port)
-    certFile   := os.Getenv("SSL_CERT_FILE")
-    keyFile    := os.Getenv("SSL_KEY_FILE")
 
     router := mux.NewRouter()
+
     router.HandleFunc("/health", HealthHandler).Methods("GET")
     router.HandleFunc("/expand", ExpandHandler).Methods("GET")
     router.HandleFunc("/parse",  ParserHandler).Methods("GET")
