@@ -25,7 +25,7 @@ func main() {
 
     router := mux.NewRouter()
 
-    router.HandleFunc("/health", HealthHandler).Methods("GET")
+    router.HandleFunc("/",       HealthHandler).Methods("GET")
     router.HandleFunc("/expand", ExpandHandler).Methods("GET")
     router.HandleFunc("/parse",  ParserHandler).Methods("GET")
 
