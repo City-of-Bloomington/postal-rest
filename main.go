@@ -17,8 +17,6 @@ import (
 func main() {
     host     := os.Getenv("LISTEN_HOST"  )
     port     := os.Getenv("LISTEN_PORT"  )
-    certFile := os.Getenv("SSL_CERT_FILE")
-    keyFile  := os.Getenv("SSL_KEY_FILE" )
 
     if host == "" { host = "0.0.0.0" }
     if port == "" { port = "8080"    }
@@ -33,13 +31,8 @@ func main() {
 
     s := &http.Server{Addr: listenSpec, Handler: router}
     go func() {
-        if certFile != "" && keyFile != "" {
-            fmt.Printf("listening on https://%s\n", listenSpec)
-            s.ListenAndServeTLS(certFile, keyFile)
-        } else {
-            fmt.Printf("listening on http://%s\n", listenSpec)
-            s.ListenAndServe()
-        }
+        fmt.Printf("listening on http://%s\n", listenSpec)
+        s.ListenAndServe()
     }()
 
     stop := make(chan os.Signal)

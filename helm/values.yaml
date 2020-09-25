@@ -11,6 +11,10 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+serviceAccount:
+  create: false
+  annotations: {}
+
 service:
   type: 'ClusterIP'
   port:       8080
@@ -26,4 +30,11 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 ...
