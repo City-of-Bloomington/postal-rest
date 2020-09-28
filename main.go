@@ -25,11 +25,9 @@ func main() {
     listenSpec := fmt.Sprintf("%s:%s", host, port)
 
     router := mux.NewRouter()
-    prefix := router.PathPrefix(base_uri).Subrouter()
-
-    prefix.HandleFunc("/health", HealthHandler).Methods("GET")
-    prefix.HandleFunc("/expand", ExpandHandler).Methods("GET")
-    prefix.HandleFunc("/parse",  ParserHandler).Methods("GET")
+    router.HandleFunc(base_uri + "/health", HealthHandler).Methods("GET")
+    router.HandleFunc(base_uri + "/expand", ExpandHandler).Methods("GET")
+    router.HandleFunc(base_uri + "/parse",  ParserHandler).Methods("GET")
 
     s := &http.Server{Addr: listenSpec, Handler: router}
     go func() {

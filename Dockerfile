@@ -11,7 +11,8 @@ RUN /bin/bash -c './bootstrap.sh; ./configure --datadir=/srv/data/libpostal; mak
 WORKDIR /srv/sites/postal-rest
 ENV GOPATH=/srv/sites/postal-rest
 ENV LISTEN_PORT=80
-RUN go get github.com/City-of-Bloomington/postal-rest; go install github.com/City-of-Bloomington/postal-rest
+COPY main.go main.go
+RUN go get .; go build -o bin/postal-rest
 
 EXPOSE 80
 ENTRYPOINT bin/postal-rest
