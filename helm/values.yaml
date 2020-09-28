@@ -11,6 +11,9 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+config:
+  base_uri: "/postal-rest"
+
 serviceAccount:
   create: false
   annotations: {}

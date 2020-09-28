@@ -15,8 +15,9 @@ import (
 )
 
 func main() {
-    host     := os.Getenv("LISTEN_HOST"  )
-    port     := os.Getenv("LISTEN_PORT"  )
+    host     := os.Getenv("LISTEN_HOST")
+    port     := os.Getenv("LISTEN_PORT")
+    base_uri := os.Getenv("BASE_URI"   )
 
     if host == "" { host = "0.0.0.0" }
     if port == "" { port = "8080"    }
@@ -24,10 +25,11 @@ func main() {
     listenSpec := fmt.Sprintf("%s:%s", host, port)
 
     router := mux.NewRouter()
+    prefix := router.PathPrefix(base_uri).Subrouter()
 
-    router.HandleFunc("/",       HealthHandler).Methods("GET")
-    router.HandleFunc("/expand", ExpandHandler).Methods("GET")
-    router.HandleFunc("/parse",  ParserHandler).Methods("GET")
+    prefix.HandleFunc("/health", HealthHandler).Methods("GET")
+    prefix.HandleFunc("/expand", ExpandHandler).Methods("GET")
+    prefix.HandleFunc("/parse",  ParserHandler).Methods("GET")
 
     s := &http.Server{Addr: listenSpec, Handler: router}
     go func() {

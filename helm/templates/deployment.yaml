@@ -33,17 +33,21 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name:  "BASE_URI"
+              value: "{{ .Values.config.base_uri }}"
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /postal-rest/health
               port: http
+            initialDelaySeconds: 120
           readinessProbe:
             httpGet:
-              path: /
+              path: /postal-rest/health
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
